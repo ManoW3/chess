@@ -6,8 +6,11 @@
 
 using namespace std;
 
-bool moveValidation (char board[8][8], string piece, string target);
+vector<vector<int>> move;
+
+bool moveValidation (char board[8][8], vector<vector<int>> move);
 vector<vector<int>> convert (string p1Piece, string p1Target);
+void makeMove(char board[8][8], vector<vector<int>> move);
 
 int main() {
     char board[8][8] = 
@@ -27,39 +30,49 @@ int main() {
     }
 
     while (true) {
-        do {
-            // asks user 1 for move, then user 2, converts it and checks. 
-            // if it is a valid move, it will replace the piece at the end location with the one at the start.
-            // Keeps going, we will not do checking for checkmates cuz thats too hard
-            // Rememebr, if a move is invalid, it asks again. you will prob have to use a nested while loop.
-            string piece;
-            string target;
+        string piece;
+        string target;
+        
+        while (true) {
+            cout << "Player 1, piece would you like to move?" << endl << ">>> ";
+            cin >> piece;
+
+            cout << "Player 1, where would you like to move that piece?" << endl << ">>> ";
+            cin >> target;
             
-            while (true) {
-                cout << "Player 1, piece would you like to move?" << endl << ">>> ";
-                cin >> piece;
+            vector<vector<int>> move = convert(piece, target);
+            bool valid = moveValidation(board, move);
 
-                cout << "Player 1, where would you like to move that piece?" << endl << ">>> ";
-                cin >> target;
-                
-                vector<vector<int>> move = convert(piece, target);
-                bool valid = moveValidation(board, move);
+            if (!valid) {
+                cout << "Invalid Move. Please try again.";
+            }
+            else {
+                makeMove(board, move);
+                break;
+            }
+        }   
 
-                if (boo)
-            }    
-
+        while (true) {
             cout << "Player 2, piece would you like to move?" << endl << ">>> ";
             cin >> piece;
 
             cout << "Player 2, where would you like to move that piece?" << endl << ">>> ";
             cin >> target;
             
-            vector<vector<int>> move = convert(piece, targehft);
+            vector<vector<int>> move = convert(piece, target);
             bool valid = moveValidation(board, move);
 
+            if (!valid) {
+                cout << "Invalid Move. Please try again";
+            }
+            else {
+                makeMove(board, move);
+                break;
+            }
         }
-    } 
-}
+    }
+} 
+
 bool rookValidation (char board[8][8], vector<int> pos, vector<int> target) {
     int greaterY = max(pos[1], target[1]);
     int smallerY = min(pos[1], target[1]);
@@ -190,15 +203,27 @@ bool moveValidation (char board[8][8], vector<vector<int>> move) {
     }
 }
 
-vector<vector<int>> convert(string piece, string target) {
-    return {convert(piece), convert(target)};
-}
-
 vector<int> convert(string position) {
     vector<int> coords(2);
     coords[0] = position[0] - 'a';
     coords[1] = 8 - (position[1] - '0');
     return coords;
+}
+
+vector<vector<int>> convert(string piece, string target) {
+    return {convert(piece), convert(target)};
+}
+
+
+void makeMove(char board[8][8], vector<vector<int>> move) {
+    int startRow = move[0][1];
+    int startCol = move[0][0];
+    int targetRow = move[1][1];
+    int targetCol = move[1][0]; 
+
+    char piece = board[startRow][startCol];
+    board[startRow][startCol] = '_';
+    board[targetRow][targetCol] = piece; 
 }
 
 
