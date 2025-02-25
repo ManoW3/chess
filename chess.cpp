@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
+
 using namespace std;
 
 bool moveValidation (char board[8][8], string piece, string target);
@@ -24,7 +27,7 @@ int main() {
     }
 
     while (true) {
-        do{
+        do {
             string p1Piece;
             string p1Target;
 
@@ -39,18 +42,66 @@ int main() {
         } while(!valid);
     } 
 }
+bool rookValidation (char board[8][8], vector<int> pos, vector<int> target) {
+    int greaterY = max(pos[1], target[1]);
+    int smallerY = min(pos[1], target[1]);
 
-bool moveValidation (char board[8][8], vector<vector<char>> move) {
+    int greaterX = max(pos[0], target[0]);
+    int smallerX = min(pos[0], target[0]);
+
+    // left and right
+    if (pos[0] == target[0]) {
+        for (int i = smallerY + 1; i < greaterY; i++) {
+            if (board[pos[0]][i] != ' ') {
+                return false; 
+            }
+        }
+    }
+    // up and down
+    else if (pos[1] == target[1]) {
+        for (int i = smallerX + 1; i < greaterX; i++) {
+            if (board[i][pos[1]] != ' ') {
+                return false; 
+            }
+        }
+    }
+    else {
+        return false; 
+    }
+}
+
+bool bishopValidation (char board[8][8], vector<int> pos, vector<int> target) {
+    int greaterY = max(pos[1], target[1]);
+    int smallerY = min(pos[1], target[1]);
+
+    int greaterX = max(pos[0], target[0]);
+    int smallerX = min(pos[0], target[0]);
+
+    if(abs(pos[0]-target[0]) == abs(pos[1]-target[1])) {
+        // if 
+        // for loop starts at top right, subtracts one from each
+    }
+}
+
+bool moveValidation (char board[8][8], vector<vector<int>> move) {
+    vector<int> pos = move[0];
+    vector<int> target = move[1];
     char piece = board[move[0][0]][move[0][1]];
     switch (piece) {
-        case 'R':
+        case 'R': 
+            return rookValidation(board, pos, target);
+            break;
+        case 'B': 
+            return bishopValidation(board, pos, target);
+            break;
+
             
     }
 }
 
-vector<vector<int>> convert (string piece, string target) {
-    // Converts it into a vector of vector of ints, example:
-    // piece = a7 and Target = b3, it will return {{0, 6}, {1, 2}}
-    // piece = c2 and Target = d1, it will return {{2, 1}, {3, 0}}
-
+vector<int> convert (string position) {
+    vector<int> coords(2);
+    coords[0] = position[0] - 'a';
+    coords[1] = 8 - (position[1] - '0');
+    return coords;
 }
