@@ -6,8 +6,6 @@
 
 using namespace std;
 
-vector<vector<int>> move;
-
 bool moveValidation (char board[8][8], vector<vector<int>> move);
 vector<vector<int>> convert (string p1Piece, string p1Target);
 void makeMove(char board[8][8], vector<vector<int>> move);
@@ -23,17 +21,19 @@ int main() {
         {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, 
         {'R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R'}};  
 
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            cout << board[i][j];
-        }
-    }
-
     while (true) {
         string piece;
         string target;
         
         while (true) {
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    cout << board[i][j] << " ";
+                }
+                cout << endl;
+            }
+
             cout << "Player 1, piece would you like to move?" << endl << ">>> ";
             cin >> piece;
 
@@ -43,16 +43,26 @@ int main() {
             vector<vector<int>> move = convert(piece, target);
             bool valid = moveValidation(board, move);
 
-            if (!valid) {
-                cout << "Invalid Move. Please try again.";
+            cout << boolalpha << valid << endl;
+
+            if (valid) {
+                makeMove(board, move);
+                valid = false;
+                break;
             }
             else {
-                makeMove(board, move);
-                break;
+                cout << "Bad move";
             }
         }   
 
         while (true) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    cout << board[i][j] << " ";
+                }
+                cout << endl;
+            }
+
             cout << "Player 2, piece would you like to move?" << endl << ">>> ";
             cin >> piece;
 
@@ -62,12 +72,15 @@ int main() {
             vector<vector<int>> move = convert(piece, target);
             bool valid = moveValidation(board, move);
 
-            if (!valid) {
-                cout << "Invalid Move. Please try again";
+            cout << boolalpha << valid << endl;
+
+            if (valid) {
+                makeMove(board, move);
+                valid = false; 
+                break;
             }
             else {
-                makeMove(board, move);
-                break;
+                cout << "bad move";
             }
         }
     }
@@ -144,15 +157,29 @@ bool knightValidation (char board[8][8], vector<int> pos, vector<int> target) {
 
 
 bool pawnValidation (char board[8][8], vector<int> pos, vector<int> target) {
-    int x1 = pos[0];
-    int y1 = pos[1];
-
+    int x1 = pos[0]; // Column
+    int y1 = pos[1]; // Row
     int x2 = target[0];
     int y2 = target[1];
 
-    if (x2 == x1 && abs(y2 -y1) == 1) {
-        if (board[target[0]][target[1]] == '_') return true;
+    char piece = board[y1][x1]; // Get the piece at the starting position
+    int direction = (piece == 'P') ? -1 : 1; // White pawns move up (-1), black pawns move down (+1)
+
+    // Normal forward move
+    if (x1 == x2 && y2 == y1 + direction && board[y2][x2] == '_') {
+        return true;
     }
+
+    // First move: Can move two squares forward
+    if (x1 == x2 && y2 == y1 + 2 * direction && (y1 == 1 || y1 == 6) && board[y1 + direction][x1] == '_' && board[y2][x2] == '_') {
+        return true;
+    }
+
+    // Capture move (diagonal)
+    if (abs(x2 - x1) == 1 && y2 == y1 + direction && board[y2][x2] != '_') {
+        return true;
+    }
+
     return false;
 }
 
