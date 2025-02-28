@@ -12,6 +12,7 @@ void makeMove(char board[8][8], vector<vector<int>> move);
 bool isValidPosition(string pos);
 
 int main() {
+    string buffer;
     char board[8][8] = 
        {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, 
         {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, 
@@ -21,12 +22,14 @@ int main() {
         {'_', '_', '_', '_', '_', '_', '_', '_'},
         {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
         {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};  
-
+        
+    cout << "\033[2J\033[1;1H"; // Clear screen
     cout << "Welcome to Chess! Use algebraic notation (e.g., 'e2' to 'e4') to move pieces." << endl;
     cout << "White pieces: R=Rook, N=Knight, B=Bishop, Q=Queen, K=King, P=Pawn (uppercase)" << endl;
     cout << "Black pieces: r=rook, n=knight, b=bishop, q=queen, k=king, p=pawn (lowercase)" << endl;
     cout << "Board layout: Columns (a-h, left to right), Rows (8-1, top to bottom)" << endl;
     cout << "Enter 'quit' to exit or type 'lost' to resign and lose the game. cuz we didn't have enough time to check for checkmate in this project" << endl;
+    cin >> buffer; 
 
     while (true) {
         string piece;
